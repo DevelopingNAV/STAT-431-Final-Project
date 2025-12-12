@@ -1,0 +1,65 @@
+model {
+
+  for (i in 1:N) {
+
+    # Shot volume
+    FGA[i] ~ dpois(lambda_fga[i])
+    FTA[i] ~ dpois(lambda_fta[i])
+
+    log(lambda_fga[i]) <- mu_fga
+                          + u_fga[player[i]]
+                          + v_fga[team[i]]
+
+    log(lambda_fta[i]) <- mu_fta
+                          + u_fta[player[i]]
+                          + v_fta[team[i]]
+
+    # Efficiency
+    FGM[i] ~ dbin(p_fg[i], FGA[i])
+    FTM[i] ~ dbin(p_ft[i], FTA[i])
+
+    logit(p_fg[i]) <- mu_fg
+                      + u_fg[player[i]]
+                      + v_fg[team[i]]
+
+    logit(p_ft[i]) <- mu_ft
+                      + u_ft[player[i]]
+                      + v_ft[team[i]]
+
+    # Deterministic TS
+    TS_hat[i] <- (2 * FGM[i] + FTM[i]) /
+                 (2 * (FGA[i] + 0.44 * FTA[i]))
+  }
+
+  # Player effects
+  for (j in 1:J) {
+    u_fga[j] ~ dnorm(0, tau_u_fga)
+    u_fta[j] ~ dnorm(0, tau_u_fta)
+    u_fg[j]  ~ dnorm(0, tau_u_fg)
+    u_ft[j]  ~ dnorm(0, tau_u_ft)
+  }
+
+  # Team effects
+  for (k in 1:K) {
+    v_fga[k] ~ dnorm(0, tau_v_fga)
+    v_fta[k] ~ dnorm(0, tau_v_fta)
+    v_fg[k]  ~ dnorm(0, tau_v_fg)
+    v_ft[k]  ~ dnorm(0, tau_v_ft)
+  }
+
+  # Priors
+  mu_fga ~ dnorm(0, 0.01)
+  mu_fta ~ dnorm(0, 0.01)
+  mu_fg  ~ dnorm(0, 0.01)
+  mu_ft  ~ dnorm(0, 0.01)
+
+  tau_u_fga ~ dgamma(1,1)
+  tau_u_fta ~ dgamma(1,1)
+  tau_u_fg  ~ dgamma(1,1)
+  tau_u_ft  ~ dgamma(1,1)
+
+  tau_v_fga ~ dgamma(1,1)
+  tau_v_fta ~ dgamma(1,1)
+  tau_v_fg  ~ dgamma(1,1)
+  tau_v_ft  ~ dgamma(1,1)
+}

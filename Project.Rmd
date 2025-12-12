@@ -13,4 +13,94 @@ teams = read.csv("data/nba_teams_2015_2024_gamelog_ts.csv")
 ```{r}
 teams
 ```
+```{r}
+results
+```
+```{r}
+colnames(players)
+```
+
+
+```{r}
+# Install ggplot2 if you haven't already
+# install.packages("ggplot2")
+
+library(ggplot2)
+
+# 1. Load the datasets
+# Make sure the CSV files are in your R working directory
+players <- read.csv("data/nba_players_2015_2024_gamelog_ts.csv")
+teams <- read.csv("data/nba_teams_2015_2024_gamelog_ts.csv")
+
+# --- PLAYER LEVEL PLOTS ---
+
+# Player PTS Distribution
+ggplot(players, aes(x=PTS)) +
+  geom_histogram(bins=30, fill="skyblue", color="white") +
+  geom_density(alpha=0.2, fill="blue") +
+  ggtitle("Player Points (PTS) Distribution") +
+  theme_minimal()
+
+# Player FGA Distribution
+ggplot(players, aes(x=FGA)) +
+  geom_histogram(bins=30, fill="salmon", color="white") +
+  geom_density(alpha=0.2, fill="red") +
+  ggtitle("Player Field Goal Attempts (FGA) Distribution") +
+  theme_minimal()
+
+# Player FTA Distribution
+ggplot(players, aes(x=FTA)) +
+  geom_histogram(bins=30, fill="lightgreen", color="white") +
+  geom_density(alpha=0.2, fill="green") +
+  ggtitle("Player Free Throw Attempts (FTA) Distribution") +
+  theme_minimal()
+
+#Efficiency Plots (FG% & FT%)
+
+ggplot(players %>% filter(FGA > 0),
+       aes(x = FGM / FGA)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  ggtitle("Player Game-Level FG%") +
+  xlab("FGM / FGA") +
+  theme_minimal()
+
+
+ggplot(players %>% filter(FTA > 0),
+       aes(x = FTM / FTA)) +
+  geom_histogram(bins = 30, fill = "darkgreen", color = "white") +
+  ggtitle("Player Game-Level FT%") +
+  xlab("FTM / FTA") +
+  theme_minimal()
+
+
+```
+
+```{r}
+library(dplyr)
+
+team_games <- players %>%
+  group_by(TEAM_ID, GAME_ID) %>%
+  summarise(
+    FGA = sum(FGA),
+    FTA = sum(FTA),
+    FGM = sum(FGM),
+    FTM = sum(FTM),
+    .groups = "drop"
+  )
+
+ggplot(team_games, aes(x = FGA)) +
+  geom_histogram(binwidth = 2, fill = "salmon", color = "white") +
+  ggtitle("Team Game-Level FGA Distribution") +
+  theme_minimal()
+
+
+ggplot(team_games,
+       aes(x = FGM / FGA)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  ggtitle("Team Game-Level FG%") +
+  theme_minimal()
+
+
+```
+
 

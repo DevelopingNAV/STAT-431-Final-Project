@@ -1,25 +1,16 @@
 ```{r}
-playoff_box = read_csv("data/play_off_box_scores_2010_2024.csv")
-playoff_box
+players = read.csv("data/nba_players_2015_2024_gamelog_ts.csv")
 ```
+
 ```{r}
-playoff_total = read_csv("data/play_off_totals_2010_2024.csv")
-playoff_total
+players
 ```
+
 ```{r}
-regs_1 = read_csv("data/regular_season_box_scores_2010_2024_part_1.csv")
-regs_1
+teams = read.csv("data/nba_teams_2015_2024_gamelog_ts.csv")
 ```
+
 ```{r}
-regs_2 = read_csv("data/regular_season_box_scores_2010_2024_part_2.csv")
-regs_2
-```
-```{r}
-regs_3 = read_csv("data/regular_season_box_scores_2010_2024_part_3.csv")
-regs_3
-```
-```{r}
-reg_totals = read_csv("data/regular_season_totals_2010_2024.csv")
-reg_totals
+teams
 ```
 
